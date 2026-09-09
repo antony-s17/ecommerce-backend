@@ -1,11 +1,16 @@
 import { prisma } from '../db/config.js';
 import { cleanData } from '../utils/utils.js';
 import CError, { Selector } from '../misc/errors.js';
+import cloudinary from '../config/cloudinary.js';
 
 const attributes = ['id', 'createdAt', 'updatedAt'];
 
-const insertProduct = async (product) => {
+const insertProduct = async (product, file) => {
     try {
+        if (file) {
+            const result = await uploadImage(file);
+            product.imageUrl = result.secure_url;
+        }
         const response = await prisma.product.create({ data: product });
         return {
             ok: true,
@@ -17,6 +22,28 @@ const insertProduct = async (product) => {
         }
     } 
 }
+
+const uploadImage = (file) => {
+    return new Promise((resolve, reject) => {
+
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: 'products'
+            },
+            (error, result) => {
+
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve(result);
+            }
+        );
+
+        stream.end(file.buffer);
+    });
+};
 
 const selectAllProducts = async (productId) => {
     try {
@@ -51,8 +78,12 @@ const selectProductById = async (id) => {
     }
 }
 
-const updateProduct = async (id, data) => {
+const updateProduct = async (id, data, file) => {
     try {
+        if (file) {
+            const result = await uploadImage(file);
+            data.imageUrl = result.secure_url;
+        }
         const productUpdate = await prisma.product.update({ where: { id } , data});
         return {
             ok: true,
