@@ -103,13 +103,14 @@ import validateProductsMiddleware from '../middlewares/validateProduct.js';
 import authenticate from '../middlewares/authenticate.js';
 import reviewRouter from './review.js';
 import requireRole from '../middlewares/requireRole.js';
+import upload from '../config/multer.js';
 
 const router = express.Router();
 
-router.post('/', authenticate, requireRole('ADMIN'),validateProductsMiddleware, createProduct);
+router.post('/', authenticate, requireRole('ADMIN'), upload.single('image'), validateProductsMiddleware,createProduct);
 router.get('/', getAllProducts);
 router.delete('/:id', authenticate, requireRole('ADMIN'), removeProduct);
-router.put('/:id', authenticate, requireRole('ADMIN'), updateInfoProduct);
+router.put('/:id', authenticate, requireRole('ADMIN'), upload.single('image'), updateInfoProduct);
 router.get('/:id', getProductById);
 //reviews routes
 router.use('/:productId/reviews', authenticate, reviewRouter);

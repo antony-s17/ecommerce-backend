@@ -3,8 +3,10 @@ import { isValidUUID } from '../utils/utils.js';
 import CError, { Selector } from '../misc/errors.js';
 
 const createProduct = async (req, res, next) => {
-    const { name, description, price, stock, imageUrl } = req.body;
-    const response = await insertProduct({ name, description, price, stock, imageUrl });
+    const product = JSON.parse(req.body.product);
+    //const { name, description, price, stock } = req.body;
+    const { name, description, price, stock } = product;
+    const response = await insertProduct({ name, description, price, stock }, req.file);
     if (!response.ok) {
         return next(new CError(Selector.BAD_ERROR));
     }
@@ -43,7 +45,8 @@ const updateInfoProduct = async (req, res, next) => {
     if (!isValidUUID(req.params.id)) {
         return next(new CError(Selector.BAD_INPUT));
     }
-    const response = await updateProduct(req.params.id, req.body);
+    const data = JSON.parse(req.body.data);
+    const response = await updateProduct(req.params.id, data, req.file);
     if (!response.ok) {
         if (response.data === 'P2025') {
             return next(new CError(Selector.NOT_FOUND));
