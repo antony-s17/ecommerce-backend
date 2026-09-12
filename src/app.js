@@ -14,7 +14,8 @@ import cors from "cors";
 const app = express();
 
 app.use(cors({
-  origin: '*'
+  origin: process.env.URL_FRONTEND,
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
