@@ -39,10 +39,11 @@ const login = async (req, res, next) => {
         return next(new CError(Selector.BAD_ERROR));
     }
     res.cookie("access_token", response.data, {
-        expiresAt: new Date() + 3_600_00,
         httpOnly: true,
-        secure: false //only true in production
-    })
+        secure: true,
+        sameSite: "none",
+        maxAge: 60 * 60 * 1000
+    });
     return res.status(200).json(
         {
             ok: true
@@ -51,7 +52,11 @@ const login = async (req, res, next) => {
 }
 
 const logout = async(req, res, next) => {
-    res.clearCookie("access_token");
+    res.clearCookie("access_token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    });
     return res.status(200).json(
         {
             ok: true
