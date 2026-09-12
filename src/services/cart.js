@@ -50,53 +50,6 @@ const insertItemToCart = async (userId, productId) => {
     }
 }
 
-/* const getCartProducts = async (userId, db = prisma) => {
-    try {
-        const cart = await prisma.cart.findFirst({
-            select: {id: true},
-            where: {userId, status: 'ACTIVE'}
-        })
-        if (!cart) {
-            throw new Error("Not found active cart");
-        }
-        const cartItems = await db.cartItem.findMany(
-            {
-                select: {id: true, productId: true, quantity: true },
-                where: { cartId: cart.id }
-            }
-        )
-        if (cartItems.length === 0) {
-            return {
-                ok: true,
-                data: []
-            }
-        }
-        //Search items info 
-        const products = await selectAllProducts(cartItems.map(({productId}) => productId));
-        if (!products.ok) {
-            throw new Error("Not found products");
-        }
-        const response = products.data.map((product) => {
-            const item = cartItems.find(item => item.productId === product.id);
-            return {
-                ...product, 
-                quantity: item.quantity,
-                subtotal: item.quantity * Number(product.price)
-            }
-        });
-        return {
-            ok: true,
-            data: {
-                cartId: cart.id,
-                items: response
-            }
-        }
-    } catch(error) {
-        return {
-            ok: false
-        }
-    }
-} */
 
 const getCartProducts = async (userId, db = prisma) => {
     try {
@@ -171,6 +124,7 @@ const getCartProducts = async (userId, db = prisma) => {
         };
     }
 };
+
 
 const createOrder = async (userId) => {
     try {
