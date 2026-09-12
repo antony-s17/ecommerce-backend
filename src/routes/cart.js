@@ -41,14 +41,15 @@
  */
 import express from 'express';
 import authenticate from '../middlewares/authenticate.js';
-import { addItemToCart, infoCart, checkoutCart } from '../controllers/cart.js';
+import { addItemToCart, infoCart, checkoutCart, confirmCheckout } from '../controllers/cart.js';
 
 
 const router = express.Router();
 
 router.post('/', authenticate, addItemToCart);
 router.get('/', authenticate, infoCart);
-router.post('/checkout', authenticate , checkoutCart);
+router.post('/checkout', authenticate, checkoutCart);
+router.post("/checkout/confirm", authenticate, confirmCheckout);
 
 export default router;
 
