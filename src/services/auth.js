@@ -1,6 +1,6 @@
 import { compare } from "../utils/utils.js";
 import { prisma } from "../db/config.js"
-import CError, { Selector } from "../misc/errors.js";
+import { Selector } from "../misc/errors.js";
 import { cleanData, encrypt } from "../utils/utils.js"
 import { sign } from "../utils/jwt.js";
 
@@ -21,11 +21,6 @@ const insertUser = async (user, role) => {
         }
     }
 }
-
-import { compare } from "bcrypt";
-import { prisma } from "../db/config.js";
-import { sign } from "../utils/jwt.js";
-import { Selector } from "../misc/errors.js";
 
 const loginUser = async (email, password) => {
   try {
