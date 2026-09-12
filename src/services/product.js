@@ -45,7 +45,7 @@ const uploadImage = (file) => {
     });
 };
 
-const selectAllProducts = async (productId) => {
+/* const selectAllProducts = async (productId) => {
     try {
         const response = await prisma.product.findMany({ select: { id: true,name: true, price: true }, where: {id: { in: productId }}});
         return {
@@ -58,7 +58,40 @@ const selectAllProducts = async (productId) => {
             data: []
         }
     }
-}
+}  */
+
+const selectAllProducts = async (productIds, db = prisma) => {
+    try {
+        const response = await db.product.findMany({
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                price: true,
+                stock: true,
+                imageUrl: true
+            },
+            where: productIds
+                ? {
+                    id: {
+                        in: productIds
+                    }
+                }
+                : undefined
+        });
+
+        return {
+            ok: true,
+            data: response
+        };
+
+    } catch (error) {
+        return {
+            ok: false,
+            data: []
+        };
+    }
+};
 
 const selectProductById = async (id) => {
     try {

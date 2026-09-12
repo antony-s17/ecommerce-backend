@@ -6,7 +6,7 @@ const createProduct = async (req, res, next) => {
     const product = JSON.parse(req.body.product);
     //const { name, description, price, stock } = req.body;
     const { name, description, price, stock } = product;
-    const response = await insertProduct({ name, description, price, stock }, req.file);
+    const response = await insertProduct({ name, description, price: Number(price), stock: Number(stock) }, req.file);
     if (!response.ok) {
         return next(new CError(Selector.BAD_ERROR));
     }
@@ -46,7 +46,18 @@ const updateInfoProduct = async (req, res, next) => {
         return next(new CError(Selector.BAD_INPUT));
     }
     const data = JSON.parse(req.body.data);
-    const response = await updateProduct(req.params.id, data, req.file);
+    const productData = {
+        ...data
+    };
+
+    if (data.price !== undefined) {
+        productData.price = Number(data.price);
+    }
+
+    if (data.stock !== undefined) {
+        productData.stock = parseInt(data.stock, 10);
+    }
+    const response = await updateProduct(req.params.id, productData, req.file);
     if (!response.ok) {
         if (response.data === 'P2025') {
             return next(new CError(Selector.NOT_FOUND));
