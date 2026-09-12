@@ -6,7 +6,7 @@ const validateCreateUser = (req, res, next) => {
     if (!username?.trim() || !email?.trim() || !password?.trim() || !validator.isEmail(email) || !validator.isLength(password, {min:8})) {
         return next(new CError(Selector.BAD_INPUT));
     }
-    req.body.email = validator.normalizeEmail(email); //normalize email PRUEBA@GMAIL.COM -> prueba@gmail.com
+    req.body.email = validator.normalizeEmail(email);
     next();
 }
 
